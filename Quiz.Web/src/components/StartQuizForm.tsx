@@ -1,17 +1,20 @@
+import { Alert, Snackbar } from '@mui/material';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { validateEmail } from '@/lib/utils';
 import { useState } from 'react';
 
-import { Alert, Snackbar } from '@mui/material';
-import Button from '@/components/Button';
-import Input from '@/components/Input';
-import { validateEmail } from '@/lib/utils';
+type Props = {
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  onStartQuiz: () => void;
+};
 
-const QuizPage = () => {
-  const [email, setEmail] = useState('');
-  const [quizStarted, setQuizStarted] = useState(false);
+const StartQuizForm = ({ email, setEmail, onStartQuiz }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const startQuiz = () => {
+  const handleSubmit = () => {
     setError(null);
 
     if (email.trim() === '') {
@@ -26,7 +29,7 @@ const QuizPage = () => {
       return;
     }
 
-    setQuizStarted(true);
+    onStartQuiz();
   };
 
   const handleCloseSnackbar = () => {
@@ -48,14 +51,14 @@ const QuizPage = () => {
             placeholder="Enter your email"
           />
         </div>
-        <Button onClick={startQuiz} variant="primary">
+        <Button onClick={handleSubmit} variant="primary">
           Start Quiz
         </Button>
       </div>
 
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={5000}
+        autoHideDuration={3000}
         onClose={handleCloseSnackbar}
       >
         <Alert severity="error" onClose={handleCloseSnackbar}>
@@ -66,4 +69,4 @@ const QuizPage = () => {
   );
 };
 
-export default QuizPage;
+export default StartQuizForm;

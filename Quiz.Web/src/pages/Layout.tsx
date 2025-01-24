@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from 'react-router';
 
-import Button from '@/components/Button';
+import Button from '@/components/ui/Button';
 
-const MainLayout = () => {
+const Layout = () => {
   const navigate = useNavigate();
 
   return (
@@ -24,4 +24,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default Layout;

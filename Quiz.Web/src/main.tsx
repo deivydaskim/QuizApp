@@ -3,16 +3,16 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 import './global.css';
-import QuizPage from '@/pages/Quiz.tsx';
+import HomePage from '@/pages/Home';
 import HighscoresPage from '@/pages/Highscores';
-import MainLayout from '@/pages/MainLayout';
+import Layout from '@/pages/Layout';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout />}>
-          <Route index element={<QuizPage />} />
+        <Route element={<Layout />}>
+          <Route index element={<HomePage />} />
           <Route path="highscores" element={<HighscoresPage />}></Route>
         </Route>
       </Routes>
