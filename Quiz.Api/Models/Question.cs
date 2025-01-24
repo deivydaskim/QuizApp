@@ -6,10 +6,10 @@ public class Question
 {
   [Key]
   public int Id { get; set; }
-  public string? Text { get; set; }
-  public QuestionType Type { get; set; }
+  public required string Text { get; set; }
+  public required QuestionType Type { get; set; }
   public string[]? Options { get; set; }
-  public string[]? CorrectAnswer { get; set; }
+  public required string[] CorrectAnswer { get; set; }
 }
 
 public enum QuestionType

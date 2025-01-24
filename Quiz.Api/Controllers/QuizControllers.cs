@@ -22,4 +22,11 @@ public class QuizController : ControllerBase
     var questions = await _quizService.GetQuestionsAsync();
     return Ok(questions);
   }
+
+  [HttpPost]
+  public async Task<ActionResult> SubmitQuiz([FromBody] QuizSubmitDto submission)
+  {
+    var result = await _quizService.SubmitQuizAsync(submission);
+    return Ok(result);
+  }
 }
