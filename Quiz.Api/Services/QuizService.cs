@@ -1,5 +1,6 @@
 // TODO: ADD CHECK IF QUESTION ID IN ANSWERS IS NOT REPEATING, EACH SHOULD BE UNIQUE IN REQUEST BODY FOR SUBMIT
 // TODO: CREATE ERROR HANDLING HERE AND IN CONTROLLER
+// TODO: SEND RANDOM QUESTIONS FROM DB, MAXIMUM 10;
 
 using Microsoft.EntityFrameworkCore;
 using QuizApp.DTOs;
@@ -33,8 +34,9 @@ public class QuizService : IQuizService
 
   public async Task<QuizResult> SubmitQuizAsync(QuizSubmitDto submission)
   {
-    // Get all questions from db with matching question ID from submission
-    var questionIds = submission.Answers.Select(a => a.QuestionId).ToList();
+    // Extract the question IDs from the answers
+    var questionIds = submission.Answers.Select(a => a.QuestionId).Distinct().ToList();
+    // Only fetch questions that are needed (matching the IDs in the submission)
     var questions = await _db.Questions
         .Where(q => questionIds.Contains(q.Id))
         .ToListAsync();
@@ -90,4 +92,23 @@ public class QuizService : IQuizService
     return result;
   }
 
+  public async Task<List<HighScoreDto>> GetHighScoresAsync()
+  {
+    var highScores = await _db.QuizResults
+        .OrderByDescending(e => e.Score)
+        .ThenBy(e => e.SubmittedAt)
+        .Take(10)
+        .ToListAsync();
+
+    var result = highScores.Select((e, i) => new HighScoreDto
+    {
+      Id = e.Id,
+      Position = i + 1,
+      Email = e.Email,
+      Score = e.Score,
+      SubmittedAt = e.SubmittedAt
+    }).ToList();
+
+    return result;
+  }
 }

@@ -29,4 +29,11 @@ public class QuizController : ControllerBase
     var result = await _quizService.SubmitQuizAsync(submission);
     return Ok(result);
   }
+
+  [HttpGet("highscores")]
+  public async Task<ActionResult<List<HighScoreDto>>> GetHighScores()
+  {
+    var highScores = await _quizService.GetHighScoresAsync();
+    return Ok(highScores);
+  }
 }
