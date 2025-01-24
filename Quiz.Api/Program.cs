@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuizApp.Models;
+using QuizApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<QuizContext>(options => options.UseInMemoryDatabase("QuizDB"));
+builder.Services.AddScoped<IQuizService, QuizService>();
 
 var app = builder.Build();
 
