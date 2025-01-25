@@ -1,6 +1,6 @@
-//TODO: SEED MORE DATA FROM JSON FILE
-
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace QuizApp.Models;
 
@@ -11,36 +11,32 @@ public class QuizContext : DbContext
   public DbSet<Question> Questions { get; set; }
   public DbSet<QuizResult> QuizResults { get; set; }
 
-  // Method for seeding memory with hard coded values.
-  public void SeedQuestions()
+  // Method for seeding questions from JSON file
+  public void SeedQuestionsFromJson(string jsonFilePath)
   {
-    var questions = new List<Question>
+    if (Questions.Any()) return; // Skip seeding if there are already questions in the database
+
+    try
     {
-      new Question {
-        Id = 1,
-        Text = "What is 2 + 2?",
-        Type = QuestionType.Radio,
-        Options = ["4", "3", "5", "6"],
-        CorrectAnswer = ["4"]
-      },
+      var jsonData = File.ReadAllText(jsonFilePath);
+      var options = new JsonSerializerOptions
+      {
+        PropertyNameCaseInsensitive = true,
+      };
+      // Convert enums to be as string names
+      options.Converters.Add(new JsonStringEnumConverter());
 
-      new Question {
-        Id = 2,
-        Text = "Select even numbers",
-        Type = QuestionType.Checkbox,
-        Options = ["1", "2", "3", "4" ],
-        CorrectAnswer = ["2", "4"]
-      },
+      var questions = JsonSerializer.Deserialize<List<Question>>(jsonData, options);
 
-      new Question {
-        Id = 3,
-        Text = "Type the capital of France",
-        Type = QuestionType.Text,
-        CorrectAnswer = ["Paris"]
-      },
-    };
-
-    Questions.AddRange(questions);
-    SaveChanges();
+      if (questions != null)
+      {
+        Questions.AddRange(questions);
+        SaveChanges();
+      }
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Error seeding questions: {ex.Message}");
+    }
   }
 }

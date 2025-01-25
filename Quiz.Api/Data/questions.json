@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "text": "What is the capital of Lithuania?",
+    "type": "Radio",
+    "options": ["Kaunas", "Vilnius", "Klaipėda", "Šiauliai"],
+    "correctAnswer": ["Vilnius"]
+  },
+  {
+    "id": 2,
+    "text": "Select the colors of the Lithuanian flag.",
+    "type": "Checkbox",
+    "options": ["Red", "Green", "Blue", "Yellow"],
+    "correctAnswer": ["Yellow", "Green", "Red"]
+  },
+  {
+    "id": 3,
+    "text": "In what year did Lithuania declare independence from the Soviet Union?",
+    "type": "Text",
+    "options": null,
+    "correctAnswer": ["1990"]
+  },
+  {
+    "id": 4,
+    "text": "What is the national dish of Lithuania?",
+    "type": "Radio",
+    "options": ["Cepelinai", "Kibinai", "Kotletai", "Grybukai"],
+    "correctAnswer": ["Cepelinai"]
+  },
+  {
+    "id": 5,
+    "text": "Which of the following are UNESCO World Heritage sites in Lithuania?",
+    "type": "Checkbox",
+    "options": [
+      "Curonian Spit",
+      "Hill of Crosses",
+      "Vilnius Old Town",
+      "Kaunas Castle"
+    ],
+    "correctAnswer": ["Curonian Spit", "Vilnius Old Town"]
+  },
+  {
+    "id": 6,
+    "text": "What is Lithuania’s official language?",
+    "type": "Text",
+    "options": null,
+    "correctAnswer": ["Lithuanian"]
+  },
+  {
+    "id": 7,
+    "text": "Which Lithuanian basketball player is considered one of the greatest of all time?",
+    "type": "Radio",
+    "options": [
+      "Šarūnas Jasikevičius",
+      "Arvydas Sabonis",
+      "Jonas Valančiūnas",
+      "Linas Kleiza"
+    ],
+    "correctAnswer": ["Arvydas Sabonis"]
+  },
+  {
+    "id": 8,
+    "text": "Select the Baltic countries.",
+    "type": "Checkbox",
+    "options": ["Latvia", "Estonia", "Poland", "Lithuania"],
+    "correctAnswer": ["Latvia", "Estonia", "Lithuania"]
+  },
+  {
+    "id": 9,
+    "text": "What is the name of the longest river in Lithuania?",
+    "type": "Text",
+    "options": null,
+    "correctAnswer": ["Nemunas"]
+  },
+  {
+    "id": 10,
+    "text": "What is the approximate population of Lithuania?",
+    "type": "Radio",
+    "options": ["2.8 million", "5 million", "1.5 million", "4.2 million"],
+    "correctAnswer": ["2.8 million"]
+  }
+]

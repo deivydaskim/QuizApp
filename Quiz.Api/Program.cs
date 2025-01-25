@@ -12,7 +12,7 @@ builder.Services.AddDbContext<QuizContext>(options => options.UseInMemoryDatabas
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddCors(options =>
    {
-       options.AddPolicy("AllowLocalhost", builder =>
+        options.AddPolicy("AllowLocalhost", builder =>
            builder.WithOrigins("http://localhost:5173")
                   .AllowAnyMethod()
                   .AllowAnyHeader());
@@ -24,7 +24,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<QuizContext>();
-    context.SeedQuestions();
+    context.SeedQuestionsFromJson("Data/questions.json");
 }
 
 // Configure the HTTP request pipeline.
