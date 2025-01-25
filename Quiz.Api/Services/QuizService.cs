@@ -1,5 +1,3 @@
-// TODO: ADD CHECK IF QUESTION ID IN ANSWERS IS NOT REPEATING, EACH SHOULD BE UNIQUE IN REQUEST BODY FOR SUBMIT
-
 using Microsoft.EntityFrameworkCore;
 using QuizApp.DTOs;
 using QuizApp.Models;
