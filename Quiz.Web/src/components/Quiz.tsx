@@ -1,37 +1,31 @@
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import Question from '@/components/Question';
 import Button from '@/components/ui/Button';
-import { Answer } from '@/types/quiz';
-import { Question as QuestionType } from '@/types/quiz';
-
-const quizData: QuestionType[] = [
-  {
-    id: 1,
-    text: 'What is 5 + 3?',
-    type: 'Radio',
-    options: ['7', '8', '9', '6'],
-  },
-  {
-    id: 2,
-    text: 'Select the prime numbers',
-    type: 'Checkbox',
-    options: ['2', '4', '6', '7'],
-  },
-  {
-    id: 3,
-    text: 'Type the capital of Germany',
-    type: 'Text',
-  },
-];
+import { fetchQuizData } from '@/lib/quizApi';
+import { Question as QuestionType, Answer } from '@/types/quiz';
 
 type Props = {
   email: string;
 };
 
 const Quiz = ({ email }: Props) => {
+  const [quizData, setQuizData] = useState<QuestionType[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [isError, setIsError] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchQuizData('/api/quizz');
+        setQuizData(data);
+      } catch (error) {
+        console.error('Failed to fetch quiz data:', error);
+        setIsError(true);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleAnswerChange = (
     questionId: number,
@@ -68,6 +62,14 @@ const Quiz = ({ email }: Props) => {
   const currentQuestion = quizData[currentQuestionIndex];
   const currentAnswer =
     answers.find(a => a.questionId === currentQuestion.id)?.answer || '';
+
+  if (isError) {
+    return <div>Something went wrong. Try again later</div>;
+  }
+
+  if (quizData.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <form className="flex h-full flex-col justify-between">
