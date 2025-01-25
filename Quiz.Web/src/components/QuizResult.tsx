@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { formatDate } from '@/lib/utils';
 import { Result } from '@/types/quiz';
 
 type Props = {
@@ -15,7 +16,7 @@ const QuizResult = ({ result, onReset }: Props) => {
         <p className="text-4xl">
           Score: <strong>{result.score}</strong>
         </p>
-        <p>{new Date(result.submittedAt).toLocaleString()}</p>
+        <p>{formatDate(result.submittedAt)}</p>
       </div>
 
       <Button onClick={onReset}>Start New Quiz</Button>

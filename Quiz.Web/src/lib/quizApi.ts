@@ -27,3 +27,14 @@ export const submitQuizData = async (data: Record<string, unknown>) => {
 
   return response.json();
 };
+
+export const getHighScores = async () => {
+  const response = await fetch(`${apiUrl}/api/quiz/highscores`);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Unknown error');
+  }
+
+  return response.json();
+};

@@ -10,9 +10,15 @@ export type Answer = {
   answer: string | string[];
 };
 
-export type Result = {
+type BaseResult = {
   id: number;
   email: string;
   score: number;
   submittedAt: string;
+};
+
+export type Result = BaseResult;
+
+export type HighScore = BaseResult & {
+  position: number;
 };
