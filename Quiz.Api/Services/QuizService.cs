@@ -71,12 +71,31 @@ public class QuizService : IQuizService
       else if (question.Type == QuestionType.Checkbox)
       {
         var correctQuizAnswer = question.CorrectAnswer;
-        var selectedUserAnswer = answer.UserAnswer;
+        var selectedUserAnswer = answer.UserAnswer.Distinct().ToArray(); // Also removes duplicates for checkbox answers
 
-        // Check how many selected answers match the correct answers
-        int correctCount = selectedUserAnswer.Count(opt => correctQuizAnswer.Contains(opt));
-        int totalCorrect = correctQuizAnswer.Length;
-        score += (default_points * correctCount + totalCorrect - 1) / totalCorrect; // Rounds up to integer
+        // Check if the user selected exactly the correct answers (no extras)
+        bool allAnswersCorrect = selectedUserAnswer.Length == correctQuizAnswer.Length &&
+                                 !selectedUserAnswer.Except(correctQuizAnswer).Any();
+
+        if (allAnswersCorrect)
+        {
+          score += default_points;
+        }
+        else
+        {
+          int totalCorrect = correctQuizAnswer.Length;
+          int valueForAnswer = default_points / totalCorrect;
+
+          // Get how many user answers are correct, and how many incorrect
+          int correctCount = selectedUserAnswer.Count(opt => correctQuizAnswer.Contains(opt));
+          int incorrectCount = selectedUserAnswer.Length - correctCount;
+
+          // Apply a score for correct answers, but penalize for incorrect selections
+          int scoreAdjustment = (valueForAnswer * correctCount) - (valueForAnswer * incorrectCount);
+          scoreAdjustment = Math.Max(scoreAdjustment, 0);  // Ensure score doesn't go below 0
+
+          score += scoreAdjustment;
+        }
       }
     }
 
