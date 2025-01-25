@@ -1,27 +1,37 @@
 import { useEffect, useState } from 'react';
+
 import Question from '@/components/Question';
 import Button from '@/components/ui/Button';
-import { fetchQuizData } from '@/lib/quizApi';
-import { Question as QuestionType, Answer } from '@/types/quiz';
+import QuizResult from '@/components/QuizResult';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { getQuizData, submitQuizData } from '@/lib/quizApi';
+import { Question as QuestionType, Answer, Result } from '@/types/quiz';
 
 type Props = {
   email: string;
+  onReset: () => void;
 };
 
-const Quiz = ({ email }: Props) => {
+const Quiz = ({ email, onReset }: Props) => {
   const [quizData, setQuizData] = useState<QuestionType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [isError, setIsError] = useState<boolean>(false);
+
+  const [result, setResult] = useState<Result | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchQuizData('/api/quizz');
+        const data = await getQuizData();
         setQuizData(data);
       } catch (error) {
         console.error('Failed to fetch quiz data:', error);
         setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -32,7 +42,6 @@ const Quiz = ({ email }: Props) => {
     answer: string | string[],
   ) => {
     setAnswers(prev =>
-      // If answer exists, update it instead of creating new one. Might be better solution
       prev.find(a => a.questionId === questionId)
         ? prev.map(a => (a.questionId === questionId ? { ...a, answer } : a))
         : [...prev, { questionId, answer }],
@@ -45,17 +54,25 @@ const Quiz = ({ email }: Props) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const payload = {
       email,
       answers: answers.map(a => ({
         questionId: a.questionId,
-        // To make sure answer is in array, backend handles arrays
         userAnswer: Array.isArray(a.answer) ? a.answer : [a.answer],
       })),
     };
-    console.log('Submitting:', payload);
-    // Send payload to backend
+
+    setIsLoading(true);
+
+    try {
+      const responseData = await submitQuizData(payload);
+      setResult(responseData);
+    } catch (error) {
+      console.error('Failed to submit quiz data:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isLastQuestion = currentQuestionIndex === quizData.length - 1;
@@ -64,11 +81,19 @@ const Quiz = ({ email }: Props) => {
     answers.find(a => a.questionId === currentQuestion.id)?.answer || '';
 
   if (isError) {
-    return <div>Something went wrong. Try again later</div>;
+    return (
+      <div>
+        <h3 className="text-center">Something went wrong. Try again later</h3>
+      </div>
+    );
   }
 
-  if (quizData.length === 0) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (result) {
+    return <QuizResult result={result} onReset={onReset} />;
   }
 
   return (

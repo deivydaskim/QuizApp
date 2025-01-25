@@ -11,14 +11,15 @@ const HomePage = () => {
     setQuizStarted(true);
   };
 
-  return (
-    <>
-      {quizStarted ? (
-        <Quiz email={email} />
-      ) : (
-        <StartQuiz email={email} setEmail={setEmail} onStartQuiz={startQuiz} />
-      )}
-    </>
+  const resetQuiz = () => {
+    setEmail('');
+    setQuizStarted(false);
+  };
+
+  return quizStarted ? (
+    <Quiz email={email} onReset={resetQuiz} />
+  ) : (
+    <StartQuiz email={email} setEmail={setEmail} onStartQuiz={startQuiz} />
   );
 };
 
