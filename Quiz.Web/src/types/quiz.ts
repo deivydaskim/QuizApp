@@ -1,0 +1,11 @@
+export type Question = {
+  id: number;
+  text: string;
+  type: 'Radio' | 'Checkbox' | 'Text';
+  options?: string[];
+};
+
+export type Answer = {
+  questionId: number;
+  answer: string | string[];
+};

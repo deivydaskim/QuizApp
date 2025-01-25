@@ -1,8 +1,8 @@
-import { Alert, Snackbar } from '@mui/material';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import { validateEmail } from '@/lib/utils';
 import { useState } from 'react';
+import { Alert, Snackbar, TextField } from '@mui/material';
+
+import Button from '@/components/ui/Button';
+import { validateEmail } from '@/lib/utils';
 
 type Props = {
   email: string;
@@ -10,7 +10,7 @@ type Props = {
   onStartQuiz: () => void;
 };
 
-const StartQuizForm = ({ email, setEmail, onStartQuiz }: Props) => {
+const StartQuiz = ({ email, setEmail, onStartQuiz }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -39,18 +39,20 @@ const StartQuizForm = ({ email, setEmail, onStartQuiz }: Props) => {
   return (
     <>
       <div className="flex h-full flex-col items-center justify-around">
-        <h1 className="text-primary text-2xl font-bold">
+        <h1 className="text-primary text-3xl font-bold">
           Welcome to the Quiz!
         </h1>
-        <div className="w-full max-w-80 space-y-2 text-center">
-          <p>Enter your email to start the quiz</p>
-          <Input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Enter your email"
-          />
-        </div>
+
+        <TextField
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          fullWidth
+          variant="outlined"
+          label="Enter your email to start the quiz"
+          className="max-w-md"
+        />
+
         <Button onClick={handleSubmit} variant="primary">
           Start Quiz
         </Button>
@@ -69,4 +71,4 @@ const StartQuizForm = ({ email, setEmail, onStartQuiz }: Props) => {
   );
 };
 
-export default StartQuizForm;
+export default StartQuiz;

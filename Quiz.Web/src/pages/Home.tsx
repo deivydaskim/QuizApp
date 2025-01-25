@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import StartQuizForm from '@/components/StartQuizForm';
+import StartQuiz from '@/components/StartQuiz';
 import Quiz from '@/components/Quiz';
 
 const HomePage = () => {
@@ -13,14 +13,10 @@ const HomePage = () => {
 
   return (
     <>
-      {!quizStarted ? (
-        <StartQuizForm
-          email={email}
-          setEmail={setEmail}
-          onStartQuiz={startQuiz}
-        />
+      {quizStarted ? (
+        <Quiz email={email} />
       ) : (
-        <Quiz />
+        <StartQuiz email={email} setEmail={setEmail} onStartQuiz={startQuiz} />
       )}
     </>
   );
