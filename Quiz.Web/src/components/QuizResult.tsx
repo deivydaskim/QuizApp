@@ -1,6 +1,6 @@
-import Button from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
 import { Result } from '@/types/quiz';
+import { Button } from '@mui/material';
 
 type Props = {
   result: Result;
@@ -19,7 +19,9 @@ const QuizResult = ({ result, onReset }: Props) => {
         <p>{formatDate(result.submittedAt)}</p>
       </div>
 
-      <Button onClick={onReset}>Start New Quiz</Button>
+      <Button variant="contained" color="secondary" onClick={onReset}>
+        Start New Quiz
+      </Button>
     </div>
   );
 };

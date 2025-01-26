@@ -32,8 +32,8 @@ const Question = ({ question, answer, onChange }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3 className="mb-2 text-3xl font-medium text-gray-800">
+    <div className="flex grow flex-col justify-between overflow-y-auto px-2 [scrollbar-width:thin]">
+      <h3 className="my-3 text-2xl font-medium text-gray-800">
         {question.text}
       </h3>
       {question.type === 'Radio' && (
@@ -77,6 +77,7 @@ const Question = ({ question, answer, onChange }: Props) => {
           label="Enter answer"
           fullWidth
           size="small"
+          autoComplete="off"
         />
       )}
     </div>

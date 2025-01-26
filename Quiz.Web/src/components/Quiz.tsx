@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import Question from '@/components/Question';
-import Button from '@/components/ui/Button';
 import QuizResult from '@/components/QuizResult';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import LoadingSpinner from '@/components/ui/Spinner';
 import { getQuizData, submitQuizData } from '@/lib/quizApi';
 import { Question as QuestionType, Answer, Result } from '@/types/quiz';
+import { MobileStepper, Button } from '@mui/material';
 
 type Props = {
   email: string;
@@ -42,9 +42,12 @@ const Quiz = ({ email, onReset }: Props) => {
     answer: string | string[],
   ) => {
     setAnswers(prev =>
+      // Check if an answer for the given questionId exists
       prev.find(a => a.questionId === questionId)
-        ? prev.map(a => (a.questionId === questionId ? { ...a, answer } : a))
-        : [...prev, { questionId, answer }],
+        ? // If answer exists, update the answer
+          prev.map(a => (a.questionId === questionId ? { ...a, answer } : a))
+        : // If it doesn't exist, add a new answer
+          [...prev, { questionId, answer }],
     );
   };
 
@@ -54,11 +57,18 @@ const Quiz = ({ email, onReset }: Props) => {
     }
   };
 
+  const handleBack = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+    }
+  };
+
   const handleSubmit = async () => {
     const payload = {
       email,
       answers: answers.map(a => ({
         questionId: a.questionId,
+        // This ensures that value is in array, backend handles arrays for answer
         userAnswer: Array.isArray(a.answer) ? a.answer : [a.answer],
       })),
     };
@@ -82,9 +92,7 @@ const Quiz = ({ email, onReset }: Props) => {
 
   if (isError) {
     return (
-      <div>
-        <h3 className="text-center">Something went wrong. Try again later</h3>
-      </div>
+      <h3 className="text-center">Something went wrong. Try again later</h3>
     );
   }
 
@@ -97,24 +105,47 @@ const Quiz = ({ email, onReset }: Props) => {
   }
 
   return (
-    <form className="flex h-full flex-col justify-between">
+    <div className="flex h-full flex-col justify-between gap-4 overflow-x-hidden">
       <Question
         question={currentQuestion}
         answer={currentAnswer}
         onChange={handleAnswerChange}
       />
-      <div className="self-end">
-        {isLastQuestion ? (
-          <Button variant="secondary" type="button" onClick={handleSubmit}>
-            Submit
+      <MobileStepper
+        variant="dots"
+        steps={quizData.length}
+        position="static"
+        activeStep={currentQuestionIndex}
+        nextButton={
+          isLastQuestion ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              disabled={isLastQuestion}
+            >
+              Next
+            </Button>
+          )
+        }
+        backButton={
+          <Button
+            variant="contained"
+            onClick={handleBack}
+            disabled={currentQuestionIndex === 0}
+          >
+            Back
           </Button>
-        ) : (
-          <Button variant="primary" type="button" onClick={handleNext}>
-            Next
-          </Button>
-        )}
-      </div>
-    </form>
+        }
+      />
+    </div>
   );
 };
 

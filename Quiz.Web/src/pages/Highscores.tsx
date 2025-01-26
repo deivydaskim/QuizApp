@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@mui/material';
 
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import LoadingSpinner from '@/components/ui/Spinner';
 import { getHighScores } from '@/lib/quizApi';
 import { HighScore } from '@/types/quiz';
 import { formatDate } from '@/lib/utils';
@@ -35,15 +35,27 @@ const HighscoresPage = () => {
   }, []);
 
   if (isError) {
-    return <div className="text-center">Failed to load highscores.</div>;
+    return (
+      <h3 className="text-primary text-center text-2xl font-bold">
+        Failed to load highscores.
+      </h3>
+    );
   }
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
+  if (highScores.length === 0) {
+    return (
+      <h3 className="text-primary text-center text-2xl font-bold">
+        High Scores is empty.
+      </h3>
+    );
+  }
+
   return (
-    <TableContainer className="h-full">
+    <TableContainer className="h-96 [scrollbar-width:thin]">
       <Table stickyHeader>
         <TableHead>
           <TableRow>

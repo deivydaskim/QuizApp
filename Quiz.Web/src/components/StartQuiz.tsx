@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Alert, Snackbar, TextField } from '@mui/material';
 
-import Button from '@/components/ui/Button';
+import { Alert, Snackbar, TextField, Button } from '@mui/material';
 import { validateEmail } from '@/lib/utils';
 
 type Props = {
@@ -39,7 +38,7 @@ const StartQuiz = ({ email, setEmail, onStartQuiz }: Props) => {
   return (
     <>
       <div className="flex h-full flex-col items-center justify-around">
-        <h1 className="text-primary text-3xl font-bold">
+        <h1 className="text-primary text-center text-3xl font-bold">
           Welcome to the Quiz!
         </h1>
 
@@ -53,7 +52,7 @@ const StartQuiz = ({ email, setEmail, onStartQuiz }: Props) => {
           className="max-w-md"
         />
 
-        <Button onClick={handleSubmit} variant="primary">
+        <Button onClick={handleSubmit} variant="contained" color="primary">
           Start Quiz
         </Button>
       </div>
