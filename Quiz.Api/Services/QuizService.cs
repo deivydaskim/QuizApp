@@ -16,6 +16,8 @@ public class QuizService : IQuizService
   public async Task<List<QuestionDto>> GetQuestionsAsync()
   {
     var questions = await _db.Questions
+        .OrderBy(q => Guid.NewGuid()) // Random order
+        .Take(10)
         .Select(q => new QuestionDto
         {
           Id = q.Id,
@@ -70,8 +72,7 @@ public class QuizService : IQuizService
         var selectedUserAnswer = answer.UserAnswer.Distinct().ToArray(); // Also removes duplicates for checkbox answers
 
         // Check if the user selected exactly the correct answers (no extras)
-        bool allAnswersCorrect = selectedUserAnswer.Length == correctQuizAnswer.Length &&
-                                 !selectedUserAnswer.Except(correctQuizAnswer).Any();
+        bool allAnswersCorrect = selectedUserAnswer.Length == correctQuizAnswer.Length && !selectedUserAnswer.Except(correctQuizAnswer).Any();
 
         if (allAnswersCorrect)
         {
