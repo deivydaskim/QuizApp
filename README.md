@@ -1,6 +1,6 @@
 # Quiz App
 
-This is a web application that allows users to take quizzes and view high scores. The app is written with built with a React front-end, using Vite as the bundler with Bun as package manager, and an ASP.NET Core backend with an in-memory database to handle quiz logic.
+This is a web application that allows users to take quizzes and view high scores. The app is built with a React front-end, using Vite as the bundler, and an ASP.NET Core backend with an in-memory database to handle quiz logic.
 
 ## Technologies Used
 
@@ -27,3 +27,37 @@ This is a web application that allows users to take quizzes and view high scores
 - Responsive design powered with TailwindCSS.
 - Modern UI with MUI components.
 - Error handling for both frontend and backend.
+
+## Installation and Setup
+
+### Prerequisites
+- **Node.js**: Install [Node 18+ or 20+](https://nodejs.org/en/download).
+- **.NET SDK**: Install [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
+- **Bun (Optional)**: Install [Bun](https://bun.sh) for faster package management.
+  
+
+### 1. Clone the Repository
+Run the following commands to clone the repository and navigate to the project folder:
+1. `git clone https://github.com/deivydaskim/QuizApp.git`
+2. `cd QuizApp`
+
+
+### 2. Backend Setup
+1. Navigate to the backend directory:
+   - `cd Quiz.Api`
+2. Restore dependencies:
+   - `dotnet restore`
+3. Run the backend:
+   - `dotnet run`
+
+The backend will run on `http://localhost:5054`, API docs - `http://localhost:5054/swagger/index.html`.
+
+### 3. Frontend Setup
+1. Navigate to the frontend directory:
+   - `cd Quiz.Web`
+2. Install dependencies:
+   - `bun install` or `npm install`
+3. Start the development server:
+   - `bun dev` or `npm run dev`
+
+The frontend will run on `http://localhost:5173`.
