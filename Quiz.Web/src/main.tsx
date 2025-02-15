@@ -3,19 +3,22 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 import './global.css';
-import HomePage from '@/pages/Home';
+import QuizPage from '@/pages/QuizPage';
 import HighscoresPage from '@/pages/Highscores';
 import Layout from '@/pages/Layout';
+import { QuizProvider } from '@/context/QuizProvider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="highscores" element={<HighscoresPage />}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <QuizProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<QuizPage />} />
+            <Route path="highscores" element={<HighscoresPage />}></Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QuizProvider>
   </StrictMode>,
 );

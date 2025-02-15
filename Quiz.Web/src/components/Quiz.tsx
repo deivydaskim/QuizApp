@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import Question from '@/components/Question';
-import QuizResult from '@/components/QuizResult';
 import LoadingSpinner from '@/components/ui/Spinner';
 import { getQuizData, submitQuizData } from '@/lib/quizApi';
-import { Question as QuestionType, Answer, Result } from '@/types/quiz';
+import { Question as QuestionType, Answer } from '@/types/quiz';
 import { MobileStepper, Button } from '@mui/material';
+import { useQuiz } from '@/hooks/useQuiz';
 
-type Props = {
-  email: string;
-  onReset: () => void;
-};
-
-const Quiz = ({ email, onReset }: Props) => {
+const Quiz = () => {
   const [quizData, setQuizData] = useState<QuestionType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -20,7 +15,7 @@ const Quiz = ({ email, onReset }: Props) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const [result, setResult] = useState<Result | null>(null);
+  const { email, setQuizResult } = useQuiz();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,12 +37,9 @@ const Quiz = ({ email, onReset }: Props) => {
     answer: string | string[],
   ) => {
     setAnswers(prev =>
-      // Check if an answer for the given questionId exists
       prev.find(a => a.questionId === questionId)
-        ? // If answer exists, update the answer
-          prev.map(a => (a.questionId === questionId ? { ...a, answer } : a))
-        : // If it doesn't exist, add a new answer
-          [...prev, { questionId, answer }],
+        ? prev.map(a => (a.questionId === questionId ? { ...a, answer } : a))
+        : [...prev, { questionId, answer }],
     );
   };
 
@@ -77,7 +69,7 @@ const Quiz = ({ email, onReset }: Props) => {
 
     try {
       const responseData = await submitQuizData(payload);
-      setResult(responseData);
+      setQuizResult(responseData);
     } catch (error) {
       console.error('Failed to submit quiz data:', error);
     } finally {
@@ -98,10 +90,6 @@ const Quiz = ({ email, onReset }: Props) => {
 
   if (isLoading) {
     return <LoadingSpinner />;
-  }
-
-  if (result) {
-    return <QuizResult result={result} onReset={onReset} />;
   }
 
   return (

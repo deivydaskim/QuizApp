@@ -2,14 +2,11 @@ import { useState } from 'react';
 
 import { Alert, Snackbar, TextField, Button } from '@mui/material';
 import { validateEmail } from '@/lib/utils';
+import { useQuiz } from '@/hooks/useQuiz';
 
-type Props = {
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-  onStartQuiz: () => void;
-};
+const StartQuiz = () => {
+  const { email, setEmail, startQuiz } = useQuiz();
 
-const StartQuiz = ({ email, setEmail, onStartQuiz }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -28,7 +25,7 @@ const StartQuiz = ({ email, setEmail, onStartQuiz }: Props) => {
       return;
     }
 
-    onStartQuiz();
+    startQuiz();
   };
 
   const handleCloseSnackbar = () => {

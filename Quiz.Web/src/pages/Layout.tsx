@@ -14,7 +14,7 @@ const Layout = () => {
             color="secondary"
             onClick={() => navigate('/')}
           >
-            Start Quiz
+            Quiz
           </Button>
           <Button
             variant="contained"
