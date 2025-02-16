@@ -1,7 +1,13 @@
+export enum QuestionTypeEnum {
+  RADIO = 'Radio',
+  CHECKBOX = 'Checkbox',
+  TEXT = 'Text',
+}
+
 export type Question = {
   id: number;
   text: string;
-  type: 'Radio' | 'Checkbox' | 'Text';
+  type: QuestionTypeEnum;
   options?: string[];
 };
 

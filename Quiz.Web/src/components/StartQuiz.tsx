@@ -1,35 +1,42 @@
-import { useState } from 'react';
-
-import { Alert, Snackbar, TextField, Button } from '@mui/material';
+import { useRef, useState } from 'react';
+import {
+  Alert,
+  Snackbar,
+  TextField,
+  Button,
+  SnackbarCloseReason,
+} from '@mui/material';
 import { validateEmail } from '@/lib/utils';
 import { useQuiz } from '@/hooks/useQuiz';
 
 const StartQuiz = () => {
-  const { email, setEmail, startQuiz } = useQuiz();
-
-  const [error, setError] = useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const { setEmail, startQuiz } = useQuiz();
+  const [snackbar, setSnackbar] = useState<string | null>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
-    setError(null);
+    if (!emailRef.current) return;
 
-    if (email.trim() === '') {
-      setError('Please enter your email to start the quiz.');
-      setOpenSnackbar(true);
+    const email = emailRef.current.value.trim();
+    const errorMessage = validateEmail(email);
+
+    if (errorMessage) {
+      setSnackbar(errorMessage);
       return;
     }
 
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address.');
-      setOpenSnackbar(true);
-      return;
-    }
-
+    setEmail(email);
     startQuiz();
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
+  const handleCloseSnackbar = (
+    _: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar(null);
   };
 
   return (
@@ -41,11 +48,11 @@ const StartQuiz = () => {
 
         <TextField
           type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
+          inputRef={emailRef}
           fullWidth
           variant="outlined"
           label="Enter your email to start the quiz"
+          error={!!snackbar}
           className="max-w-md"
         />
 
@@ -55,12 +62,12 @@ const StartQuiz = () => {
       </div>
 
       <Snackbar
-        open={openSnackbar}
+        open={!!snackbar}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
       >
         <Alert severity="error" onClose={handleCloseSnackbar}>
-          {error}
+          {snackbar}
         </Alert>
       </Snackbar>
     </>

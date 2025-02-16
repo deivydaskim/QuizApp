@@ -1,4 +1,4 @@
-import type { Question } from '@/types/quiz';
+import { useState } from 'react';
 import {
   Radio,
   RadioGroup,
@@ -7,28 +7,32 @@ import {
   TextField,
 } from '@mui/material';
 
+import { QuestionTypeEnum, type Question } from '@/types/quiz';
+
 type Props = {
   question: Question;
-  answer: string | string[];
+  initialAnswer: string | string[];
   onChange: (questionId: number, answer: string | string[]) => void;
 };
 
-const Question = ({ question, answer, onChange }: Props) => {
+const Question = ({ question, initialAnswer, onChange }: Props) => {
+  const [answer, setAnswer] = useState(initialAnswer);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    let newAnswer: string | string[];
 
     if (question.type === 'Checkbox') {
-      const currentAnswer = Array.isArray(answer) ? answer : [];
-
-      onChange(
-        question.id,
-        e.target.checked
-          ? [...currentAnswer, value]
-          : currentAnswer.filter(a => a !== value),
-      );
+      const current = Array.isArray(answer) ? answer : [];
+      newAnswer = e.target.checked
+        ? [...current, value]
+        : current.filter(a => a !== value);
     } else {
-      onChange(question.id, value);
+      newAnswer = value;
     }
+
+    setAnswer(newAnswer);
+    onChange(question.id, newAnswer);
   };
 
   return (
@@ -36,7 +40,7 @@ const Question = ({ question, answer, onChange }: Props) => {
       <h3 className="my-3 text-2xl font-medium text-gray-800">
         {question.text}
       </h3>
-      {question.type === 'Radio' && (
+      {question.type === QuestionTypeEnum.RADIO && (
         <RadioGroup
           value={answer}
           onChange={handleChange}
@@ -52,7 +56,7 @@ const Question = ({ question, answer, onChange }: Props) => {
           ))}
         </RadioGroup>
       )}
-      {question.type === 'Checkbox' && (
+      {question.type === QuestionTypeEnum.CHECKBOX && (
         <div className="flex flex-col">
           {question.options?.map(option => (
             <FormControlLabel
@@ -69,7 +73,7 @@ const Question = ({ question, answer, onChange }: Props) => {
           ))}
         </div>
       )}
-      {question.type === 'Text' && (
+      {question.type === QuestionTypeEnum.TEXT && (
         <TextField
           type="text"
           value={answer || ''}

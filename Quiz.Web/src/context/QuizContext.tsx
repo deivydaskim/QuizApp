@@ -12,6 +12,4 @@ interface QuizContextType {
   resetQuiz: () => void;
 }
 
-export const QuizContext = createContext<QuizContextType | undefined>(
-  undefined,
-);
+export const QuizContext = createContext<QuizContextType | null>(null);

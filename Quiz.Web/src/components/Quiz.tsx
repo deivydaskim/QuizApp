@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { MobileStepper, Button } from '@mui/material';
 
 import Question from '@/components/Question';
 import LoadingSpinner from '@/components/ui/Spinner';
 import { getQuizQuestions, postQuizAnswers } from '@/lib/quizApi';
-import { Question as QuestionType, Answer } from '@/types/quiz';
+import type { Question as QuestionType, Answer } from '@/types/quiz';
 import { useQuiz } from '@/hooks/useQuiz';
 
 const Quiz = () => {
-  const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { email, setQuizResult } = useQuiz();
+  const answersRef = useRef<Answer[]>([]);
 
   const {
     data: quizData = [],
@@ -39,11 +39,14 @@ const Quiz = () => {
     questionId: number,
     answer: string | string[],
   ) => {
-    setAnswers(prev =>
-      prev.find(a => a.questionId === questionId)
-        ? prev.map(a => (a.questionId === questionId ? { ...a, answer } : a))
-        : [...prev, { questionId, answer }],
+    const existingIndex = answersRef.current.findIndex(
+      a => a.questionId === questionId,
     );
+    if (existingIndex >= 0) {
+      answersRef.current[existingIndex] = { questionId, answer };
+    } else {
+      answersRef.current.push({ questionId, answer });
+    }
   };
 
   const handleNext = () => {
@@ -61,9 +64,8 @@ const Quiz = () => {
   const handleSubmit = async () => {
     const payload = {
       email,
-      answers: answers.map(a => ({
+      answers: answersRef.current.map(a => ({
         questionId: a.questionId,
-        // Ensure value is in array, backend handles arrays for answer
         userAnswer: Array.isArray(a.answer) ? a.answer : [a.answer],
       })),
     };
@@ -73,8 +75,9 @@ const Quiz = () => {
 
   const isLastQuestion = currentQuestionIndex === quizData.length - 1;
   const currentQuestion = quizData[currentQuestionIndex];
-  const currentAnswer =
-    answers.find(a => a.questionId === currentQuestion.id)?.answer || '';
+  const initialAnswer =
+    answersRef.current.find(a => a.questionId === currentQuestion?.id)
+      ?.answer || '';
 
   if (isError || isSubmitError) {
     return (
@@ -89,8 +92,9 @@ const Quiz = () => {
   return (
     <div className="flex h-full flex-col justify-between gap-4 overflow-x-hidden">
       <Question
+        key={currentQuestion.id}
         question={currentQuestion}
-        answer={currentAnswer}
+        initialAnswer={initialAnswer}
         onChange={handleAnswerChange}
       />
       <MobileStepper
