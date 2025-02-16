@@ -1,36 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { MobileStepper, Button } from '@mui/material';
 
 import Question from '@/components/Question';
 import LoadingSpinner from '@/components/ui/Spinner';
-import { getQuizData, submitQuizData } from '@/lib/quizApi';
+import { getQuizQuestions, postQuizAnswers } from '@/lib/quizApi';
 import { Question as QuestionType, Answer } from '@/types/quiz';
-import { MobileStepper, Button } from '@mui/material';
 import { useQuiz } from '@/hooks/useQuiz';
 
 const Quiz = () => {
-  const [quizData, setQuizData] = useState<QuestionType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
   const { email, setQuizResult } = useQuiz();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getQuizData();
-        setQuizData(data);
-      } catch (error) {
-        console.error('Failed to fetch quiz data:', error);
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const {
+    data: quizData = [],
+    isLoading,
+    isError,
+  } = useQuery<QuestionType[]>({
+    queryKey: ['quizQuestions'],
+    queryFn: getQuizQuestions,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  const {
+    mutate: submitQuiz,
+    isPending: isSubmitPending,
+    isError: isSubmitError,
+  } = useMutation({
+    mutationFn: postQuizAnswers,
+    onSuccess: data => {
+      setQuizResult(data);
+    },
+  });
 
   const handleAnswerChange = (
     questionId: number,
@@ -60,21 +63,12 @@ const Quiz = () => {
       email,
       answers: answers.map(a => ({
         questionId: a.questionId,
-        // This ensures that value is in array, backend handles arrays for answer
+        // Ensure value is in array, backend handles arrays for answer
         userAnswer: Array.isArray(a.answer) ? a.answer : [a.answer],
       })),
     };
 
-    setIsLoading(true);
-
-    try {
-      const responseData = await submitQuizData(payload);
-      setQuizResult(responseData);
-    } catch (error) {
-      console.error('Failed to submit quiz data:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    submitQuiz(payload);
   };
 
   const isLastQuestion = currentQuestionIndex === quizData.length - 1;
@@ -82,7 +76,7 @@ const Quiz = () => {
   const currentAnswer =
     answers.find(a => a.questionId === currentQuestion.id)?.answer || '';
 
-  if (isError) {
+  if (isError || isSubmitError) {
     return (
       <h3 className="text-center">Something went wrong. Try again later</h3>
     );
@@ -110,6 +104,7 @@ const Quiz = () => {
               variant="contained"
               color="secondary"
               onClick={handleSubmit}
+              disabled={isSubmitPending}
             >
               Submit
             </Button>

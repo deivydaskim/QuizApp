@@ -1,6 +1,6 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
-export const getQuizData = async () => {
+export const getQuizQuestions = async () => {
   const response = await fetch(`${apiUrl}/api/quiz`);
 
   if (!response.ok) {
@@ -11,7 +11,7 @@ export const getQuizData = async () => {
   return response.json();
 };
 
-export const submitQuizData = async (data: Record<string, unknown>) => {
+export const postQuizAnswers = async (data: Record<string, unknown>) => {
   const response = await fetch(`${apiUrl}/api/quiz`, {
     method: 'POST',
     headers: {

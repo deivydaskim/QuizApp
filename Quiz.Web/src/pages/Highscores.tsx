@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Table,
   TableBody,
@@ -14,25 +14,14 @@ import { HighScore } from '@/types/quiz';
 import { formatDate } from '@/lib/utils';
 
 const HighscoresPage = () => {
-  const [highScores, setHighScores] = useState<HighScore[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    const fetchHighScores = async () => {
-      try {
-        const data = await getHighScores();
-        setHighScores(data);
-      } catch (error) {
-        console.error('Failed to fetch highscores:', error);
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHighScores();
-  }, []);
+  const {
+    data: highScores = [],
+    isLoading,
+    isError,
+  } = useQuery<HighScore[]>({
+    queryKey: ['highScores'],
+    queryFn: getHighScores,
+  });
 
   if (isError) {
     return (
